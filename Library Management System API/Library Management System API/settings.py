@@ -37,6 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    "library.apps.LibraryConfig",
+    "rest_framework",
+    #Set Up for Token Authentication
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
@@ -121,3 +125,6 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# indicate the custom user model i set 
+AUTH_USER_MODEL = "library.User"
