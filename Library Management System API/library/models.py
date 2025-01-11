@@ -12,7 +12,7 @@ class Book(models.Model):
         return f"{self.title} by {self.author}"
 
 '''
-my custom user model
+my custom user model- for user creation.
         #A user should have a unique Username, Email, Date of Membership, and Active Status.
 '''
 
