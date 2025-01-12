@@ -8,10 +8,11 @@ The Library Management System API is designed to simplify the process of managin
 
 ## **Features**
 
-- Borrow books with availability checks.
-- Return borrowed books and update status.
+- basic token authtication
 - View all available books.
 - Search books by title or author.
+- Borrow books with availability checks.
+- Return borrowed books and update status.
 - Access a logged-in user’s borrowing history.
 
 ---
