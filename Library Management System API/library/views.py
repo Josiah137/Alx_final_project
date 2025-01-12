@@ -12,7 +12,7 @@ from .serializers import BookSerializer
 from rest_framework import generics, filters
 
 #importing modules to handle the auth and autorization 
-from rest_framework.permissions import IsAdminUser, IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAdminUser, IsAuthenticated, IsAuthenticatedOrReadOnly, AllowAny
 # from rest_framework.response import Response
 # from rest_framework.authentication import TokenAuthentication
 
@@ -23,7 +23,7 @@ from rest_framework.permissions import IsAdminUser, IsAuthenticated, IsAuthentic
 class BookListCreateView(generics.ListCreateAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
     filter_backends = [filters.SearchFilter]
     search_fields = ['title', 'author', 'ISBN']  # to allow searching by these fields
 
@@ -41,4 +41,19 @@ class BookDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     
-   
+""" create a view for the user registration"""
+#importing the custom users from our modle and also using CreateAPIView for simplification 
+from .models import User
+from .serializers import UserRegistrationSerializer
+from rest_framework.generics import CreateAPIView
+
+class UserRegistrationView(CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserRegistrationSerializer
+    permission_classes = [AllowAny] # since we dont want people to be autheticated to signup lol
+
+     # Optional: You can customize the response or add permission classes if needed  
+    def create(self, request, *args, **kwargs):  
+        response = super().create(request, *args, **kwargs)  
+        response.data = {'message': "Readers are leaders! Wellcome, You have registered successfully." }  
+        return response
