@@ -29,14 +29,20 @@ class User(AbstractUser):
 
 
 class BookLog (models.Model):
+    # declaring the name to be reffered in the database and and the user frendly one.
     user = models.ForeignKey('User', on_delete=models.CASCADE)
     book = models.ForeignKey('Book', on_delete=models.CASCADE)
     check_out_date = models.DateField(auto_now_add=True)
     return_date = models.DateField(null=True, blank=True)
+    status = models.CharField(
+        max_length=10,
+        choices=[("BORROWED", 'Borrowed'), ("RETURNED", 'Returned')],
+        default="BORROWED",   
+    )
 
     # class Meta:
     #     unique_together = ('user', 'book')    # if this is turned on, indeed a user cannot loan morethan one book but it can't also borrow the same book again if he has borrowed once
         
     def __str__(self):
-        return f"{self.user.username} - {self.book.title}"
+        return f"{self.user.username} - {self.book.title} ({self.status})"
     

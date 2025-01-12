@@ -6,15 +6,17 @@ from django.shortcuts import render
 
 # importing  my book model and its serializer
 from .models import Book
-from .serializers import BookSerializer
+from .serializers import BookSerializer, BorrowBookSerializer, ReturnBookSerializer
 
-# importing generics for my views #importing filters to enable searchig and filtering
-from rest_framework import generics, filters
+# importing generics for my generic views #importing filters to enable searchig and filtering
+from rest_framework import generics, filters, status
+
+# for my apiviews
+from rest_framework.views import APIView 
+from rest_framework.response import Response
 
 #importing modules to handle the auth and autorization 
 from rest_framework.permissions import IsAdminUser, IsAuthenticated, IsAuthenticatedOrReadOnly, AllowAny
-# from rest_framework.response import Response
-# from rest_framework.authentication import TokenAuthentication
 
 
 """ handling the views, the CRUD """
@@ -23,7 +25,6 @@ from rest_framework.permissions import IsAdminUser, IsAuthenticated, IsAuthentic
 class BookListCreateView(generics.ListCreateAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    # permission_classes = [IsAuthenticated]
     filter_backends = [filters.SearchFilter]
     search_fields = ['title', 'author', 'ISBN']  # to allow searching by these fields
 
@@ -57,3 +58,26 @@ class UserRegistrationView(CreateAPIView):
         response = super().create(request, *args, **kwargs)  
         response.data = {'message': "Readers are leaders! Wellcome, You have registered successfully." }  
         return response
+    
+    
+"""creating a view for my BookLog"""
+class BorrowBookView(APIView):  
+    permission_classes = [IsAuthenticated]  
+
+    def post(self, request):  
+        serializer = BorrowBookSerializer(data=request.data, context={'request': request})  
+        if serializer.is_valid():  
+            serializer.save()  
+            return Response({'message': 'Book borrowed successfully! Take a good care for it.'}, status=status.HTTP_201_CREATED)  
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)  
+    
+# View to handle returning books
+class ReturnBookView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        serializer = ReturnBookSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()  # Return the book
+            return Response({"message": "Book returned successfully!"}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
